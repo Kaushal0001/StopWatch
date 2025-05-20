@@ -4,21 +4,24 @@ const Stopwatch = () => {
 
     const [seconds, setSeconds] = useState(0);
     const [isRunning, setIsRunning] = useState(false);
+    const intervalRef = useRef(null);
 
     useEffect(() => {
-        let timer;
         if (isRunning) {
-            timer = setInterval(() => {
-                setSeconds((prevSeconds) => prevSeconds + 1);
+            intervalRef.current = window.setInterval(() => {
+                setSeconds((prev) => prev + 1);
             }, 1000);
+        } else {
+            clearInterval(intervalRef.current);
         }
-        return () => clearInterval(timer);
+
+        return () => clearInterval(intervalRef.current);
     }, [isRunning]);
 
     const formatTime = (totalSeconds) => {
         const minutes = Math.floor(totalSeconds / 60);
-        const remainingSeconds = totalSeconds % 60;
-        return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+        const secs = totalSeconds % 60;
+        return `${minutes}:${secs.toString().padStart(2, '0')}`;
     };
 
     const handleStartStop = () => {
